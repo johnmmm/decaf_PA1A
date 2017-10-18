@@ -35,7 +35,6 @@ import java.util.*;
 %token ','  ';'  '!'  '('  ')'  '['  ']'  '{'  '}'
 %token '?'  ':'  '@'  
 %token CASE DEFAULT
-%token REPEAT UNTIL CONTINUE
 %token SUPER
 %token DCOPY SCOPY
 %token RE IM
@@ -438,18 +437,6 @@ BreakStmt       :	BREAK
 						$$.stmt = new Tree.Break($1.loc);
 					}
                 ;
-                
-RepeatStmt		:	REPEAT Stmt UNTIL '(' Expr ')'
-					{
-						$$.stmt = new Tree.RepeatLoop($2.stmt, $5.expr, $1.loc);
-					}
-				;
-
-ContinueStmt		:	CONTINUE
-					{
-						$$.stmt = new Tree.Continue($1.loc);
-					}
-				;
 				
 Cases			:	CASE '(' Expr ')' '{' CaseStmtList DefaultStmt '}'
 					{

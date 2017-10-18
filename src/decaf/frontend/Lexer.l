@@ -74,8 +74,6 @@ WHITESPACE			= ([ \t]+)
 "ReadLine"			{ return keyword(Parser.READ_LINE);		}
 "static"			{ return keyword(Parser.STATIC);		}
 "instanceof"		{ return keyword(Parser.INSTANCEOF);	}
-"repeat"			{ return keyword(Parser.REPEAT);		}
-"until"			{ return keyword(Parser.UNTIL);		}
 "case"			{ return keyword(Parser.CASE);		}
 "default"		{ return keyword(Parser.DEFAULT);	}
 "super"			{ return keyword(Parser.SUPER);		}
