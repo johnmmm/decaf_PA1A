@@ -300,6 +300,8 @@ public abstract class Tree {
     public static final int DCOPY = SUPER + 1;
     public static final int SCOPY = DCOPY + 1;
     public static final int PRINTCOMP = SCOPY + 1;
+    public static final int DO = PRINTCOMP + 1;
+    public static final int DOING = DO + 1;
     
     /**
      * Tags for Literal and TypeLiteral
@@ -1428,7 +1430,6 @@ public abstract class Tree {
     	
     	@Override
     	public void printTo(IndentPrintWriter pw) {
-    		//System.out.println("fuckyou!");
     		pw.println("cond");
     		pw.incIndent();
     		state.printTo(pw);
@@ -1523,6 +1524,65 @@ public abstract class Tree {
     		pw.println("default");
     		pw.incIndent();
     		defas.printTo(pw);
+    		pw.decIndent();
+    	}
+    }
+    
+    public static class Doing extends Tree {
+    	public List<Do> does;
+    	
+    	public Doing(List<Do> does, Location loc){
+    		super(DOING, loc);
+    		this.does = does;
+    	}
+    	
+    	@Override
+    	public void accept(Visitor v){
+    		v.visitDoing(this);
+    	}
+    	
+    	@Override
+    	public void printTo(IndentPrintWriter pw) {
+    		pw.println("do");
+    		pw.incIndent();
+    		pw.println("branches");
+    		pw.incIndent();
+    		for(Do d : does)
+    		{
+    			d.printTo(pw);
+    		}
+    		pw.decIndent();
+    		pw.decIndent();
+    	}
+    }
+    
+    public static class Do extends Tree {
+    	public Expr value;
+    	public Tree doblock;
+    	
+    	public Do(Expr value, Tree doblock, Location loc){
+    		super(DO, loc);
+    		this.value = value;
+    		this.doblock = doblock;
+    	}
+    	
+    	@Override
+    	public void accept(Visitor v){
+    		v.visitDo(this);
+    	}
+    	
+    	@Override
+    	public void printTo(IndentPrintWriter pw) {
+    		pw.println("branch");
+    		pw.incIndent();
+    		if(value!=null)
+    		{
+    			value.printTo(pw);
+    		}
+    		if(doblock!=null)
+    		{
+    			doblock.printTo(pw);
+    		}
     		pw.decIndent();
     	}
     }
@@ -1836,6 +1896,14 @@ public abstract class Tree {
         }
         
         public void visitPrintcomp(Printcomp that){
+			visitTree(that);
+        }
+        
+        public void visitDo(Do that){
+			visitTree(that);
+        }
+        
+        public void visitDoing(Doing that){
 			visitTree(that);
         }
     }

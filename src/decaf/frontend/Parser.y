@@ -33,16 +33,16 @@ import java.util.*;
 %token LESS_EQUAL   GREATER_EQUAL  EQUAL   NOT_EQUAL
 %token '+'  '-'  '*'  '/'  '%'  '='  '>'  '<'  '.'
 %token ','  ';'  '!'  '('  ')'  '['  ']'  '{'  '}'
-%token '?'  ':'  '@'
-%token CASE SWITCH DEFAULT
-%token DOUBLELEFT REPEAT UNTIL CONTINUE
+%token '?'  ':'  '@'  
+%token CASE DEFAULT
+%token REPEAT UNTIL CONTINUE
 %token SUPER
 %token DCOPY SCOPY
 %token RE IM
+%token DO OD
 
 %left OR
 %left AND 
-%left DOUBLELEFT
 %right '?'  ':'
 %nonassoc EQUAL NOT_EQUAL
 %nonassoc LESS_EQUAL GREATER_EQUAL '<' '>'
@@ -211,6 +211,7 @@ Stmt		    :	VariableDef
                 |	RepeatStmt
                 |	SwitchStmt
                 |	StmtBlock
+                |	Do ';'
                 ;
 
 SimpleStmt      :	LValue '=' Expr
@@ -359,10 +360,6 @@ Expr            :	LValue
                 	{
                 		$$.expr = new Tree.TypeCast($3.ident, $5.expr, $5.loc);
                 	}
-                	|	Expr DOUBLELEFT Expr
-                	{
-                		$$.expr = new Tree.Binary(Tree.DL, $1.expr, $3.expr, $2.loc);
-                	}
                 	|	Expr '?' Expr ':' Expr
                 	{
                 		$$.expr = new Tree.Triple(Tree.COND, $1.expr, $3.expr, $5.expr, $2.loc);
@@ -481,6 +478,30 @@ DefaultStmt     :   DEFAULT ':' Expr ';'
                     {
                         $$.defa = new Tree.Default($3.expr, $1.loc);
                     }
+                    
+Do				:	DO DoStmtList OD
+					{
+						$$.stmt = new Tree.Doing($2.doeslist, $1.loc);
+					}
+				;
+				
+DoStmtList		:	DoStmtList DOBLOCK DoStmt
+					{
+						$$.doeslist.add($3.does);
+					}
+				|   DoStmt
+                    {
+                        $$ = new SemValue();
+                        $$.doeslist = new ArrayList<Tree.Do>();
+                        $$.doeslist.add($1.does);
+                    }
+				;
+				
+DoStmt			:	Expr ':' Stmt
+					{
+						$$.does = new Tree.Do($1.expr, $3.stmt, $1.loc);
+					}
+				;
 
 IfStmt          :	IF '(' Expr ')' Stmt ElseClause
 					{
