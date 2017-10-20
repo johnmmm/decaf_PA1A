@@ -66,7 +66,7 @@ public abstract class BaseLexer {
 					Tree.COMPLEX, Integer.decode(ival.substring(0, ival.length()-1))));
 		} catch (NumberFormatException e) {
 			Driver.getDriver().issueError(
-					new IntTooLargeError(getLocation(), ival));
+					new IntTooLargeError(getLocation(), ival.substring(0, ival.length()-1)));
 		}
 		return Parser.LITERAL;
 	}

@@ -33,7 +33,7 @@ import java.util.*;
 %token LESS_EQUAL   GREATER_EQUAL  EQUAL   NOT_EQUAL
 %token '+'  '-'  '*'  '/'  '%'  '='  '>'  '<'  '.'
 %token ','  ';'  '!'  '('  ')'  '['  ']'  '{'  '}'
-%token '?'  ':'  '@'  
+%token '@'  
 %token CASE DEFAULT
 %token SUPER
 %token DCOPY SCOPY
@@ -42,7 +42,6 @@ import java.util.*;
 
 %left OR
 %left AND 
-%right '?'  ':'
 %nonassoc EQUAL NOT_EQUAL
 %nonassoc LESS_EQUAL GREATER_EQUAL '<' '>'
 %left  '+' '-'
@@ -358,11 +357,7 @@ Expr            :	LValue
                 |	'(' CLASS IDENTIFIER ')' Expr
                 	{
                 		$$.expr = new Tree.TypeCast($3.ident, $5.expr, $5.loc);
-                	}
-                	|	Expr '?' Expr ':' Expr
-                	{
-                		$$.expr = new Tree.Triple(Tree.COND, $1.expr, $3.expr, $5.expr, $2.loc);
-                	} 	
+                	}	
                 	|	DCOPY '(' Expr ')'
                 	{
                 		$$.expr = new Tree.Dcopy($3.expr, $3.loc);

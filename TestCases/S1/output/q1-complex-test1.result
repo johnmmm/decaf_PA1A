@@ -8,7 +8,7 @@ program
                     varref a
                     add
                         intconst 1
-                        imgconst 2j
+                        varref j
                 vardef re inttype
                 vardef im inttype
                 assign
